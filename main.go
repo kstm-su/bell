@@ -9,15 +9,15 @@ import (
 )
 
 func aplay(filename string) error {
-	rate := 44100
-	channels := 1
+	rate := 48000
+	channels := 2
 
 	handle := alsa.New()
 	err := handle.Open("default", alsa.StreamTypePlayback, alsa.ModeBlock)
 	if err != nil {
 		return err
 	}
-	handle.SampleFormat = alsa.SampleFormatU8
+	handle.SampleFormat = alsa.SampleFormatS16LE
 	handle.SampleRate = rate
 	handle.Channels = channels
 	err = handle.ApplyHwParams()
