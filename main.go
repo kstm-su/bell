@@ -37,7 +37,7 @@ func aplay(filename string) error {
 func main() {
 	r := gin.Default()
 
-	r.GET("/play", func(c *gin.Context) {
+	r.POST("/play", func(c *gin.Context) {
 		err := aplay("/usr/local/share/bell.wav")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
