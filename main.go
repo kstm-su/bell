@@ -4,9 +4,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	alsa "github.com/Narsil/alsa-go"
 	"gopkg.in/gin-gonic/gin.v1"
+)
+
+var (
+	token = os.Getenv("TOKEN")
 )
 
 func aplay(filename string) error {
@@ -40,6 +45,10 @@ func main() {
 	r := gin.Default()
 
 	r.POST("/play", func(c *gin.Context) {
+		if q, ok := c.GetPostForm("token"); !ok || q != token {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "token is invalid"})
+			return
+		}
 		err := aplay("/usr/local/share/bell.wav")
 		if err != nil {
 			fmt.Println(err)
