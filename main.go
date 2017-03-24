@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -17,6 +18,7 @@ func aplay(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer handle.Close()
 	handle.SampleFormat = alsa.SampleFormatS16LE
 	handle.SampleRate = rate
 	handle.Channels = channels
@@ -40,6 +42,7 @@ func main() {
 	r.POST("/play", func(c *gin.Context) {
 		err := aplay("/usr/local/share/bell.wav")
 		if err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
