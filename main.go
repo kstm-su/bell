@@ -43,7 +43,7 @@ func main() {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{})
+		c.JSON(http.StatusOK, gin.H{"text": "呼び出し中です..."})
 	})
 
 	r.Run()
