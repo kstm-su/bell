@@ -2,7 +2,7 @@ package main
 
 import (
 	"io/ioutil"
-	"os"
+	"net/http"
 
 	alsa "github.com/Narsil/alsa-go"
 	"gopkg.in/gin-gonic/gin.v1"
@@ -30,22 +30,20 @@ func aplay(filename string) error {
 		return err
 	}
 
-	_, err := handle.Write(buf)
-	if err != nil {
-		return err
-	}
+	_, err = handle.Write(buf)
+	return err
 }
 
 func main() {
 	r := gin.Default()
 
-	r.Get("/play", func(c *gin.Context) {
+	r.GET("/play", func(c *gin.Context) {
 		err := aplay("/usr/local/share/bell.wav")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
-		c.JSON(http.StatusOk, gin.H{})
+		c.JSON(http.StatusOK, gin.H{})
 	})
 
 	r.Run()
