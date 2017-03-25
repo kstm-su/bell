@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 
 	alsa "github.com/Narsil/alsa-go"
 	"github.com/youpy/go-wav"
@@ -44,7 +45,6 @@ func aplay(filename string) error {
 	handle.SampleFormat = sampleFormat
 	handle.SampleRate = int(format.SampleRate)
 	handle.Channels = int(format.NumChannels)
-	fmt.Printf("format: %#v\n", handle)
 	err = handle.ApplyHwParams()
 	if err != nil {
 		return err
@@ -55,8 +55,13 @@ func aplay(filename string) error {
 		return err
 	}
 
-	_, err = handle.Write(buf)
-	return err
+	ch := make(chan error)
+	go func() {
+		_, err := handle.Write(buf)
+		ch <- err
+	}()
+	time.Sleep(time.Second)
+	return <-ch
 }
 
 func main() {
