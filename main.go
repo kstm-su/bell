@@ -10,10 +10,6 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-var (
-	token = os.Getenv("TOKEN")
-)
-
 func aplay(filename string) error {
 	rate := 48000
 	channels := 2
@@ -42,17 +38,36 @@ func aplay(filename string) error {
 }
 
 func main() {
+	token := os.Getenv("TOKEN")
+	fmt.Println("token:", token)
+
 	r := gin.Default()
 
 	r.POST("/play", func(c *gin.Context) {
 		if q, ok := c.GetPostForm("token"); !ok || q != token {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "token is invalid"})
+			c.JSON(http.StatusOK, gin.H{
+				"attachments": []map[string]string{
+					map[string]string{
+						"title": "error",
+						"text":  "token is invalid",
+						"color": "#bf271b",
+					},
+				},
+			})
 			return
 		}
 		err := aplay("/usr/local/share/bell.wav")
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, err)
+			c.JSON(http.StatusOK, gin.H{
+				"attachments": []map[string]string{
+					map[string]string{
+						"title": "error",
+						"text":  err.Error(),
+						"color": "#bf271b",
+					},
+				},
+			})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"text": "呼び出し中です..."})
