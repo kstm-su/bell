@@ -25,7 +25,7 @@ func aplay(filename string) error {
 	if format.AudioFormat != 1 {
 		return fmt.Errorf("audio format (%x) is not supported", format.AudioFormat)
 	}
-	sampleFormat := alsa.SampleFormatUnknown
+	var sampleFormat alsa.SampleFormat
 	switch format.BitsPerSample {
 	case 8:
 		sampleFormat = alsa.SampleFormatU8
