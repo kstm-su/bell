@@ -36,14 +36,14 @@ func aplay(filename string) error {
 	}
 
 	handle := alsa.New()
-	err := handle.Open("default", alsa.StreamTypePlayback, alsa.ModeBlock)
+	err = handle.Open("default", alsa.StreamTypePlayback, alsa.ModeBlock)
 	if err != nil {
 		return err
 	}
 	defer handle.Close()
-	handle.SampleFormat = SampleFormat
-	handle.SampleRate = format.SampleRate
-	handle.Channels = format.NumChannels
+	handle.SampleFormat = sampleFormat
+	handle.SampleRate = int(format.SampleRate)
+	handle.Channels = int(format.NumChannels)
 	err = handle.ApplyHwParams()
 	if err != nil {
 		return err
