@@ -44,6 +44,7 @@ func aplay(filename string) error {
 	handle.SampleFormat = sampleFormat
 	handle.SampleRate = int(format.SampleRate)
 	handle.Channels = int(format.NumChannels)
+	fmt.Printf("format: %#v\n", handle)
 	err = handle.ApplyHwParams()
 	if err != nil {
 		return err
