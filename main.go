@@ -7,12 +7,33 @@ import (
 	"os"
 
 	alsa "github.com/Narsil/alsa-go"
+	"github.com/youpy/go-wav"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func aplay(filename string) error {
-	rate := 48000
-	channels := 2
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+
+	r := wav.NewReader(file)
+	format, err := r.Format()
+	if err != nil {
+		return err
+	}
+	if format.AudioFormat != 1 {
+		return fmt.Errorf("audio format (%x) is not supported", format.AudioFormat)
+	}
+	sampleFormat := alsa.SampleFormatUnknown
+	switch format.BitsPerSample {
+	case 8:
+		sampleFormat = alsa.SampleFormatU8
+	case 16:
+		sampleFormat = alsa.SampleFormatS16LE
+	default:
+		return fmt.Errorf("sample format (%x) should be 8 or 16", format.BitsPerSample)
+	}
 
 	handle := alsa.New()
 	err := handle.Open("default", alsa.StreamTypePlayback, alsa.ModeBlock)
@@ -20,15 +41,15 @@ func aplay(filename string) error {
 		return err
 	}
 	defer handle.Close()
-	handle.SampleFormat = alsa.SampleFormatS16LE
-	handle.SampleRate = rate
-	handle.Channels = channels
+	handle.SampleFormat = SampleFormat
+	handle.SampleRate = format.SampleRate
+	handle.Channels = format.NumChannels
 	err = handle.ApplyHwParams()
 	if err != nil {
 		return err
 	}
 
-	buf, err := ioutil.ReadFile(filename)
+	buf, err := ioutil.ReadAll(file)
 	if err != nil {
 		return err
 	}
