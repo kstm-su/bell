@@ -1,0 +1,10 @@
+[Unit]
+Description=kstm bell server
+
+[Service]
+Environment="TOKEN="
+Environment="PORT=8080"
+ExecStart=$GOPATH/bin/bell
+
+[Install]
+WantedBy=multi-user.target
