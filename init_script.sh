@@ -12,7 +12,8 @@
 set -e
 umask 022
 
-cmd="/root/go/src/github.com/kstm-su/bell/bell"
+# cmd="/root/go/src/github.com/kstm-su/bell/bell"
+cmd="/home/kstm/go/bin/bell"
 
 . /lib/lsb/init-functions
 

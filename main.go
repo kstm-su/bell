@@ -9,7 +9,7 @@ import (
 
 	alsa "github.com/Narsil/alsa-go"
 	"github.com/youpy/go-wav"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 func aplay(filename string) error {
